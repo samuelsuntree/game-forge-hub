@@ -16,11 +16,9 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    // Update GitHub assignments
     await removeAssignee(issueNumber, fromUser);
     await addAssignee(issueNumber, toUser);
 
-    // Record transfer penalty for fromUser
     await recordScore(
       fromUser,
       "QUEST_TRANSFERRED_OUT",
@@ -29,19 +27,19 @@ export async function POST(request: NextRequest) {
       `issue#${issueNumber}`
     );
 
-    // Ensure toUser exists
-    await ensureUser(toUser, 0); // GitHub ID will be updated via webhook
+    await ensureUser(toUser, 0);
 
-    // Update quest meta
     const db = getDb();
-    db.update(questMeta)
-      .set({
-        claimedBy: toUser,
-        claimedAt: new Date().toISOString(),
-        transferredCount: sql`${questMeta.transferredCount} + 1`,
-      })
-      .where(eq(questMeta.issueNumber, issueNumber))
-      .run();
+    if (db) {
+      db.update(questMeta)
+        .set({
+          claimedBy: toUser,
+          claimedAt: new Date().toISOString(),
+          transferredCount: sql`${questMeta.transferredCount} + 1`,
+        })
+        .where(eq(questMeta.issueNumber, issueNumber))
+        .run();
+    }
 
     return NextResponse.json({ success: true, issueNumber, from: fromUser, to: toUser });
   } catch (error) {

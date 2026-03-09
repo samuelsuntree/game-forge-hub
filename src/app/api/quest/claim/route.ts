@@ -12,19 +12,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "issueNumber and username required" }, { status: 400 });
   }
 
-  // Check WIP limit
+  // Check WIP limit (skip if db unavailable)
   const db = getDb();
-  const user = db.select().from(users).where(eq(users.githubLogin, username)).get();
-
-  if (user && user.currentWip >= user.wipLimit) {
-    return NextResponse.json(
-      { error: `WIP limit reached (${user.currentWip}/${user.wipLimit}). Complete or transfer a quest first.` },
-      { status: 409 }
-    );
+  if (db) {
+    const user = db.select().from(users).where(eq(users.githubLogin, username)).get();
+    if (user && user.currentWip >= user.wipLimit) {
+      return NextResponse.json(
+        { error: `WIP limit reached (${user.currentWip}/${user.wipLimit}). Complete or transfer a quest first.` },
+        { status: 409 }
+      );
+    }
   }
 
   try {
-    // Assign on GitHub (this triggers the webhook which handles scoring)
     await addAssignee(issueNumber, username);
     await removeLabel(issueNumber, LABELS.QUEST.AVAILABLE);
     await addLabels(issueNumber, [LABELS.QUEST.CLAIMED]);

@@ -11,6 +11,7 @@ import type { ScoreEventType } from "@/types/score";
  */
 export async function ensureUser(githubLogin: string, githubId: number, avatarUrl?: string) {
   const db = getDb();
+  if (!db) return null;
 
   const existing = db
     .select()
@@ -46,6 +47,7 @@ export async function recordScore(
   githubRefUrl?: string
 ) {
   const db = getDb();
+  if (!db) return;
 
   const user = db
     .select()
@@ -96,6 +98,7 @@ export async function onQuestClaimed(
   issueUrl: string
 ) {
   const db = getDb();
+  if (!db) return;
 
   // Update WIP count
   db.update(users)
@@ -144,6 +147,7 @@ export async function onQuestCompleted(
   issueUrl: string
 ) {
   const db = getDb();
+  if (!db) return;
 
   // Get quest meta for difficulty and timing
   const meta = db
@@ -205,6 +209,7 @@ export async function onQuestCompleted(
  */
 async function checkAchievements(githubLogin: string) {
   const db = getDb();
+  if (!db) return;
 
   const user = db
     .select()
@@ -278,6 +283,7 @@ async function checkAchievements(githubLogin: string) {
 
 async function unlockAchievement(userId: number, key: string, githubLogin: string) {
   const db = getDb();
+  if (!db) return;
 
   try {
     db.insert(achievements)

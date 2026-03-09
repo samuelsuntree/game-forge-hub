@@ -6,6 +6,10 @@ import { desc } from "drizzle-orm";
 export async function GET() {
   const db = getDb();
 
+  if (!db) {
+    return NextResponse.json([]);
+  }
+
   const leaderboard = db
     .select({
       githubLogin: users.githubLogin,
