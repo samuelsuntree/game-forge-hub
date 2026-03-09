@@ -1,4 +1,4 @@
-import { QuestBoard } from "@/components/quest-board/QuestBoard";
+import { QuestBoardPageClient } from "./QuestBoardClient";
 import type { QuestBoard as QuestBoardType, Quest, QuestStatus, Difficulty } from "@/types/quest";
 import { listIssues } from "@/lib/github/issues";
 import { LABELS } from "@/lib/config";
@@ -70,15 +70,5 @@ export default async function QuestBoardPage() {
     console.error("Failed to load quest board:", error);
   }
 
-  return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white">Quest Board</h1>
-        <p className="text-gray-400 text-sm mt-1">
-          Claim quests, earn points, level up your team
-        </p>
-      </div>
-      <QuestBoard initialData={board} />
-    </div>
-  );
+  return <QuestBoardPageClient initialBoard={board} />;
 }
