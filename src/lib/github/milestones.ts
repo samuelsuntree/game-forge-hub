@@ -32,7 +32,7 @@ export async function getMilestoneIssues(milestoneNumber: number) {
 
   const { data } = await octokit.rest.issues.listForRepo({
     ...params,
-    milestone: milestoneNumber,
+    milestone: String(milestoneNumber),
     state: "all",
     per_page: 100,
   });

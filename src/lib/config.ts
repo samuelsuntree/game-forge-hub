@@ -1,23 +1,37 @@
-import { z } from "zod";
-
-const envSchema = z.object({
-  GITHUB_TOKEN: z.string().min(1),
-  GITHUB_OWNER: z.string().min(1),
-  GITHUB_REPO: z.string().min(1),
-  GITHUB_WEBHOOK_SECRET: z.string().min(1),
-  DATABASE_PATH: z.string().default("./data/game-forge.db"),
-});
-
-function loadConfig() {
-  const parsed = envSchema.safeParse(process.env);
-  if (!parsed.success) {
-    console.error("Missing environment variables:", parsed.error.flatten().fieldErrors);
-    throw new Error("Invalid environment configuration");
-  }
-  return parsed.data;
+/**
+ * Lazy-loaded config — only validates when actually accessed at runtime,
+ * not at module import time. This allows `next build` to succeed without
+ * env vars set (pages that only use LABELS/DEFAULTS won't trigger validation).
+ */
+function getConfig() {
+  return {
+    get GITHUB_TOKEN() {
+      const v = process.env.GITHUB_TOKEN;
+      if (!v) throw new Error("GITHUB_TOKEN is not set");
+      return v;
+    },
+    get GITHUB_OWNER() {
+      const v = process.env.GITHUB_OWNER;
+      if (!v) throw new Error("GITHUB_OWNER is not set");
+      return v;
+    },
+    get GITHUB_REPO() {
+      const v = process.env.GITHUB_REPO;
+      if (!v) throw new Error("GITHUB_REPO is not set");
+      return v;
+    },
+    get GITHUB_WEBHOOK_SECRET() {
+      const v = process.env.GITHUB_WEBHOOK_SECRET;
+      if (!v) throw new Error("GITHUB_WEBHOOK_SECRET is not set");
+      return v;
+    },
+    get DATABASE_PATH() {
+      return process.env.DATABASE_PATH || "./data/game-forge.db";
+    },
+  };
 }
 
-export const config = loadConfig();
+export const config = getConfig();
 
 // WIP limits and scoring defaults
 export const DEFAULTS = {
