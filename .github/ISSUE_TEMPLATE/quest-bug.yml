@@ -1,0 +1,32 @@
+name: "Quest: Bug Fix"
+description: "Report a bug to fix"
+labels: ["quest:available", "type:bug", "difficulty:normal"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: What went wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      value: |
+        1. Step 1
+        2. Step 2
+        3. ...
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - low (easy)
+        - medium (normal)
+        - high (hard)
+        - critical (epic)

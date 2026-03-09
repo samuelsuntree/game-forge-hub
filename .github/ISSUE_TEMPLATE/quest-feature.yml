@@ -1,0 +1,30 @@
+name: "Quest: Feature"
+description: "Create a new feature quest"
+labels: ["quest:available", "type:feature", "difficulty:normal"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What should this feature do?
+    validations:
+      required: true
+  - type: dropdown
+    id: difficulty
+    attributes:
+      label: Difficulty
+      options:
+        - easy
+        - normal
+        - hard
+        - epic
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: How do we know this is done?
+      value: |
+        - [ ] Criteria 1
+        - [ ] Criteria 2

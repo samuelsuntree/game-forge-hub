@@ -1,0 +1,17 @@
+name: Daily Team Report
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Every day at UTC 00:00
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate daily snapshot
+        run: |
+          curl -X GET "${{ secrets.APP_URL }}/api/report/daily" \
+            -H "Content-Type: application/json" || true
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
